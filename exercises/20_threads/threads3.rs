@@ -27,18 +27,19 @@ impl Queue {
 }
 
 fn send_tx(q: Queue, tx: mpsc::Sender<u32>) -> () {
+    let tx1 = tx.clone();
     thread::spawn(move || {
         for val in q.first_half {
             println!("sending {:?}", val);
-            tx.send(val).unwrap();
+            tx1.send(val).unwrap();
             thread::sleep(Duration::from_secs(1));
         }
     });
-
+    let tx2 = tx.clone();
     thread::spawn(move || {
         for val in q.second_half {
             println!("sending {:?}", val);
-            tx.send(val).unwrap();
+            tx2.send(val).unwrap();
             thread::sleep(Duration::from_secs(1));
         }
     });
